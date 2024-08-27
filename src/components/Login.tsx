@@ -1,7 +1,18 @@
 import React from 'react'
 import Header from './Header'
-
+import { useFormik } from 'formik';
+const initialValues={
+  name:"", 
+  email:"", 
+  password:""
+}
 const Login = () => {
+  const {values, errors, handleBlur, handleChange, handleSubmit}=useFormik({
+    initialValues:initialValues, 
+    onSubmit:(values) =>{
+      console.log("Values from form", values);
+    }
+  })
   return (
     <div>
       <Header />
@@ -11,15 +22,25 @@ const Login = () => {
           alt="logo"
         />
       </div>
-      <form className="w-3/12 absolute  p-12 bg-black my-36 mx-auto right-0 left-0 text-white">
+      <form className="w-3/12 absolute  p-12 bg-black my-36 mx-auto right-0 left-0 text-white" onSubmit={handleSubmit}>
         <h1 className="font-bold text-3xl py-4">Sign In</h1>
         <input
-          type="text"
+          type="email"
+          name="email"
+          id="email"
+          value={values.email}
+          onChange={handleChange}
+          onBlur={handleBlur}
           placeholder="Email Address"
           className="p-4 my-4 w-full bg-gray-700"
         />
         <input
           type="password"
+          name="password"
+          id="password"
+          value={values.password}
+          onChange={handleChange}
+          onBlur={handleBlur}
           placeholder="Password"
           className="p-4 my-4 w-full bg-gray-700"
         />
