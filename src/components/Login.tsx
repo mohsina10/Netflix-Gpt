@@ -1,25 +1,71 @@
-import React, { useState } from 'react'
-import Header from './Header'
-import { useFormik } from 'formik';
-import {signUpSchema} from "../validations/index";
-const initialValues={
-  name:"", 
-  email:"", 
-  password:""
-}
+import React, { useState } from "react";
+import Header from "./Header";
+import { useFormik } from "formik";
+import { signUpSchema } from "../validations/index";
+import {
+  createUserWithEmailAndPassword,
+  signInWithEmailAndPassword,
+} from "firebase/auth";
+import { auth } from "../utils/firebase";
+const initialValues = {
+  name: "",
+  email: "",
+  password: "",
+};
 
 const Login = () => {
-  const [isSignedIn,setIsSignedIn] =useState(false);
-  const {values, errors, touched,handleBlur, handleChange, handleSubmit}=useFormik({
-    initialValues:initialValues, 
-    validationSchema:signUpSchema,
-    onSubmit:(values) =>{
-      console.log("Values from form", values);
-    }
-  })
-  const handleClick =()=>{
+  const [isSignedIn, setIsSignedIn] = useState(false);
+  const { values, errors, touched, handleBlur, handleChange, handleSubmit } =
+    useFormik({
+      initialValues: initialValues,
+      validationSchema: signUpSchema,
+      onSubmit: (values) => {
+        console.log("Values from form", values);
+        if (isSignedIn) {
+          if (
+            !errors.name &&
+            touched.name &&
+            !errors.email &&
+            touched.email &&
+            !errors.password &&
+            touched.password
+          ) {
+            createUserWithEmailAndPassword(auth, values.email, values.password)
+              .then((userCredential) => {
+                // Signed up
+                const user = userCredential.user;
+                console.log("User signed up", user);
+                // ...
+              })
+              .catch((error) => {
+                const errorCode = error.code;
+                const errorMessage = error.message;
+                console.log("Error", errorCode, errorMessage);
+                // ..
+              });
+          }
+        } 
+        else 
+        {
+          console.log("######", values.email);
+          signInWithEmailAndPassword(auth, values.email, values.password)
+            .then((userCredential) => {
+              // Signed in
+              const user = userCredential.user;
+              console.log("User: " + user);
+              // ...
+            })
+            .catch((error) => {
+              const errorCode = error.code;
+              const errorMessage = error.message;
+            });
+        }
+      },
+    });
+  const handleClick = () => {
     setIsSignedIn(!isSignedIn);
-  }
+  };
+
   return (
     <div>
       <Header />
@@ -61,7 +107,7 @@ const Login = () => {
           placeholder="Email Address"
           className="p-4 my-4 w-full bg-gray-700"
         />
-        {errors.email && touched.email && (<p>{errors.email}</p>)}
+        {errors.email && touched.email && <p>{errors.email}</p>}
         <input
           type="password"
           name="password"
@@ -72,8 +118,8 @@ const Login = () => {
           placeholder="Password"
           className="p-4 my-4 w-full bg-gray-700"
         />
-        {errors.password && touched.password && (<p>{errors.password}</p>)}
-        <button className="p-4 my-6 bg-red-700 w-full">
+        {errors.password && touched.password && <p>{errors.password}</p>}
+        <button className="p-4 my-6 bg-red-700 w-full" type="submit">
           {!isSignedIn ? "Sign In" : "Sign Up"}
         </button>
         <p className="py-4" onClick={handleClick}>
@@ -82,6 +128,6 @@ const Login = () => {
       </form>
     </div>
   );
-}
+};
 
-export default Login
+export default Login;
