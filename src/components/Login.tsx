@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useContext, useState } from "react";
 import Header from "./Header";
 import { useFormik } from "formik";
 import { signUpSchema } from "../validations/index";
@@ -7,18 +7,28 @@ import {
   signInWithEmailAndPassword,
 } from "firebase/auth";
 import { auth } from "../utils/firebase";
+import { UserContext } from "../utils/UserContext";
 const initialValues = {
   name: "",
   email: "",
   password: "",
 };
 
+
 const Login = () => {
   const [isSignedIn, setIsSignedIn] = useState(false);
+   const context = useContext(UserContext);
+   if (!context) {
+     throw new Error("Login must be used within a UserProvider");
+   }
+const validationSchema = isSignedIn
+  ? signUpSchema // for sign-up (with name, email, and password validation)
+  : signUpSchema.pick(["email", "password"]); 
+   const { loginUser } = context; 
   const { values, errors, touched, handleBlur, handleChange, handleSubmit } =
     useFormik({
       initialValues: initialValues,
-      validationSchema: signUpSchema,
+      validationSchema: validationSchema,
       onSubmit: (values) => {
         console.log("Values from form", values);
         if (isSignedIn) {
@@ -34,6 +44,7 @@ const Login = () => {
               .then((userCredential) => {
                 // Signed up
                 const user = userCredential.user;
+                loginUser(user.email);
                 console.log("User signed up", user);
                 // ...
               })
@@ -44,21 +55,27 @@ const Login = () => {
                 // ..
               });
           }
-        } 
-        else 
-        {
-          console.log("######", values.email);
-          signInWithEmailAndPassword(auth, values.email, values.password)
-            .then((userCredential) => {
-              // Signed in
-              const user = userCredential.user;
-              console.log("User: " + user);
-              // ...
-            })
-            .catch((error) => {
-              const errorCode = error.code;
-              const errorMessage = error.message;
-            });
+        } else {
+          if (
+            !errors.email &&
+            touched.email &&
+            !errors.password &&
+            touched.password
+          ) {
+            console.log("######", values.email);
+            signInWithEmailAndPassword(auth, values.email, values.password)
+              .then((userCredential) => {
+                // Signed in
+                const user = userCredential.user;
+                loginUser(user.email);
+                console.log("User: " + JSON.stringify(user));
+                // ...
+              })
+              .catch((error) => {
+                const errorCode = error.code;
+                const errorMessage = error.message;
+              });
+          }
         }
       },
     });
