@@ -1,6 +1,7 @@
 import React, { useContext } from 'react'
 import { UserContext } from "../utils/UserContext";
-function Browse() {
+import Header from './Header';
+const Browse =()=> {
 
    const context = useContext(UserContext);
    if (!context) {
@@ -9,9 +10,13 @@ function Browse() {
 
    const { loginUser, user } = context; 
    console.log("User:@@ " + user);
-  return(
-  <div>Hello {user?.email}</div>
-  );
+ 
+    return (
+    <>
+      <Header/>
+      <div>Hello {user?.email}</div>
+    </>
+    );
 }
 
-export default Browse
+export default Browse;

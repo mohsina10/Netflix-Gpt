@@ -8,6 +8,7 @@ import {
 } from "firebase/auth";
 import { auth } from "../utils/firebase";
 import { UserContext } from "../utils/UserContext";
+import { useNavigate } from "react-router-dom";
 const initialValues = {
   name: "",
   email: "",
@@ -17,6 +18,7 @@ const initialValues = {
 
 const Login = () => {
   const [isSignedIn, setIsSignedIn] = useState(false);
+  const navigation=useNavigate();
    const context = useContext(UserContext);
    if (!context) {
      throw new Error("Login must be used within a UserProvider");
@@ -24,7 +26,7 @@ const Login = () => {
 const validationSchema = isSignedIn
   ? signUpSchema // for sign-up (with name, email, and password validation)
   : signUpSchema.pick(["email", "password"]); 
-   const { loginUser } = context; 
+   const { loginUser, user } = context; 
   const { values, errors, touched, handleBlur, handleChange, handleSubmit } =
     useFormik({
       initialValues: initialValues,
@@ -43,8 +45,8 @@ const validationSchema = isSignedIn
             createUserWithEmailAndPassword(auth, values.email, values.password)
               .then((userCredential) => {
                 // Signed up
-                const user = userCredential.user;
-                loginUser(user.email);
+                const user1= userCredential.user;
+                loginUser(user1.email);
                 console.log("User signed up", user);
                 // ...
               })
@@ -66,9 +68,10 @@ const validationSchema = isSignedIn
             signInWithEmailAndPassword(auth, values.email, values.password)
               .then((userCredential) => {
                 // Signed in
-                const user = userCredential.user;
-                loginUser(user.email);
+                const user1 = userCredential.user;
+                loginUser(user1);
                 console.log("User: " + JSON.stringify(user));
+                navigation('/browse');
                 // ...
               })
               .catch((error) => {
