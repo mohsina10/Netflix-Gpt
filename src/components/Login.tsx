@@ -46,7 +46,7 @@ const validationSchema = isSignedIn
               .then((userCredential) => {
                 // Signed up
                 const user1= userCredential.user;
-                loginUser(user1.email);
+                // loginUser(user1.email);
                 console.log("User signed up", user);
                 // ...
               })
@@ -67,12 +67,11 @@ const validationSchema = isSignedIn
             console.log("######", values.email);
             signInWithEmailAndPassword(auth, values.email, values.password)
               .then((userCredential) => {
-                // Signed in
+            
                 const user1 = userCredential.user;
-                loginUser(user1);
+                // loginUser(user1);
                 console.log("User: " + JSON.stringify(user));
                 navigation('/browse');
-                // ...
               })
               .catch((error) => {
                 const errorCode = error.code;
