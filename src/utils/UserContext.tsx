@@ -2,6 +2,8 @@ import React, { createContext, useState, ReactNode, useEffect } from "react";
 interface User {
   name: string;
   email: string;
+  photoURL: string;
+  displayName: string;
 }
 type UserContextType= {
   user: User | null; // `user` can be either `User` or `null`

@@ -5,28 +5,30 @@ import { signUpSchema } from "../validations/index";
 import {
   createUserWithEmailAndPassword,
   signInWithEmailAndPassword,
+  updateProfile,
 } from "firebase/auth";
 import { auth } from "../utils/firebase";
 import { UserContext } from "../utils/UserContext";
 import { useNavigate } from "react-router-dom";
+import {USER_AVATAR} from '../utils/Constant';
 const initialValues = {
   name: "",
   email: "",
   password: "",
 };
 
-
 const Login = () => {
   const [isSignedIn, setIsSignedIn] = useState(false);
-  const navigation=useNavigate();
-   const context = useContext(UserContext);
-   if (!context) {
-     throw new Error("Login must be used within a UserProvider");
-   }
-const validationSchema = isSignedIn
-  ? signUpSchema // for sign-up (with name, email, and password validation)
-  : signUpSchema.pick(["email", "password"]); 
-   const { loginUser, user } = context; 
+  const navigation = useNavigate();
+  const context = useContext(UserContext);
+  /* LoginUser has syntax Error to resolve this error check if context exist or not */
+  if (!context) {
+    throw new Error("Login must be used within a UserProvider");
+  }
+  const validationSchema = isSignedIn
+    ? signUpSchema
+    : signUpSchema.pick(["email", "password"]);
+  const { loginUser, user } = context;
   const { values, errors, touched, handleBlur, handleChange, handleSubmit } =
     useFormik({
       initialValues: initialValues,
@@ -45,9 +47,21 @@ const validationSchema = isSignedIn
             createUserWithEmailAndPassword(auth, values.email, values.password)
               .then((userCredential) => {
                 // Signed up
-                const user1= userCredential.user;
-                // loginUser(user1.email);
-                console.log("User signed up", user);
+                const user1 = userCredential.user;
+                // loginUser(user1);
+                console.log("createUserWithEmailAndPassword called");
+                updateProfile(user1, {
+                  displayName: values.name,
+                  photoURL: USER_AVATAR ,
+                })
+                  .then(() => {
+                    console.log("updateProfile called");
+                    //  loginUser(user);
+                  })
+                  .catch((error) => {
+                    console.log("Error Message", error);
+                  });
+                navigation("/browse");
                 // ...
               })
               .catch((error) => {
@@ -67,11 +81,10 @@ const validationSchema = isSignedIn
             console.log("######", values.email);
             signInWithEmailAndPassword(auth, values.email, values.password)
               .then((userCredential) => {
-            
                 const user1 = userCredential.user;
                 // loginUser(user1);
                 console.log("User: " + JSON.stringify(user));
-                navigation('/browse');
+                navigation("/browse");
               })
               .catch((error) => {
                 const errorCode = error.code;
