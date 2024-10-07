@@ -2,6 +2,7 @@ import React, { useContext, useEffect } from "react";
 import { UserContext } from "../utils/UserContext";
 import Header from "./Header";
 import useNowPlayingMovies from "../hooks/useNowPlayingMovies";
+import MainContainer from "./maincontainer/MainContainer";
 const Browse = () => {
   const context = useContext(UserContext);
   if (!context) {
@@ -12,7 +13,7 @@ const Browse = () => {
   return (
     <>
       <Header />
-      <div className="py-100">Hello {user?.email}</div>
+     <MainContainer/>
     </>
   );
 };
