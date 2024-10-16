@@ -3,7 +3,8 @@ interface Movie {
   id: number;
   original_title: string;
   releaseDate: string;
-  overview:string;
+  overview: string;
+  poster_path: string;
   // Add more properties as needed
 }
 
@@ -23,7 +24,17 @@ interface Videotitle {
 interface VideoBackgroundMovie {
   movieId: number;
 }
-interface NowPlayingVideo {
-  movieId: number;
+interface MovieListProps {
+  title: string;
+  movie: Movie[];
 }
-export type { RootState, Videotitle, VideoBackgroundMovie };
+interface MovieCardProps {
+  path:string;
+}
+export type {
+  RootState,
+  Videotitle,
+  VideoBackgroundMovie,
+  MovieListProps,
+  MovieCardProps,
+};

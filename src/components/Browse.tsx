@@ -3,6 +3,7 @@ import { UserContext } from "../utils/UserContext";
 import Header from "./Header";
 import useNowPlayingMovies from "../hooks/useNowPlayingMovies";
 import MainContainer from "./maincontainer/MainContainer";
+import SecondaryContainer from "./maincontainer/SecondaryContainer";
 const Browse = () => {
   const context = useContext(UserContext);
   if (!context) {
@@ -14,6 +15,7 @@ const Browse = () => {
     <>
       <Header />
      <MainContainer/>
+     <SecondaryContainer/>
     </>
   );
 };
