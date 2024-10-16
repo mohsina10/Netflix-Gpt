@@ -10,7 +10,8 @@ interface Movie {
 
 interface MoviesState {
   nowPlayingMovies: Movie[];
-  youtubekey:number;
+  popularMovies: Movie[];
+  youtubekey: number;
 }
 
 interface RootState {

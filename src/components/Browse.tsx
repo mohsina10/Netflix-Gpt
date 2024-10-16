@@ -2,6 +2,7 @@ import React, { useContext, useEffect } from "react";
 import { UserContext } from "../utils/UserContext";
 import Header from "./Header";
 import useNowPlayingMovies from "../hooks/useNowPlayingMovies";
+import usePopular from "../hooks/usePopular";
 import MainContainer from "./maincontainer/MainContainer";
 import SecondaryContainer from "./maincontainer/SecondaryContainer";
 const Browse = () => {
@@ -10,6 +11,7 @@ const Browse = () => {
     throw new Error("Login must be used within a UserProvider");
   }
   useNowPlayingMovies();
+  usePopular();
   const { loginUser, user } = context;
   return (
     <>
