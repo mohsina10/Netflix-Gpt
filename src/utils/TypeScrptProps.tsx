@@ -13,10 +13,12 @@ interface MoviesState {
   popularMovies: Movie[];
   youtubekey: number;
 }
-
+interface GptState {
+  isGptEnabled: Boolean;
+}
 interface RootState {
   movies: MoviesState;
-
+  gpt:GptState;
 }
 interface Videotitle {
   title: string;

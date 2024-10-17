@@ -5,8 +5,12 @@ import useNowPlayingMovies from "../hooks/useNowPlayingMovies";
 import usePopular from "../hooks/usePopular";
 import MainContainer from "./maincontainer/MainContainer";
 import SecondaryContainer from "./maincontainer/SecondaryContainer";
+import GptSearch from "./gpt/GptSearch";
+import { useSelector } from "react-redux";
+import { RootState } from "../utils/TypeScrptProps";
 const Browse = () => {
   const context = useContext(UserContext);
+  const gptToggel = useSelector((store: RootState) => store?.gpt?.isGptEnabled);
   if (!context) {
     throw new Error("Login must be used within a UserProvider");
   }
@@ -16,8 +20,15 @@ const Browse = () => {
   return (
     <>
       <Header />
-     <MainContainer/>
-     <SecondaryContainer/>
+      {
+      gptToggel ? 
+        <GptSearch />
+       : (
+        <>
+          <MainContainer />
+          <SecondaryContainer />
+        </>
+      )}
     </>
   );
 };
