@@ -2,7 +2,7 @@ import React, { FC, useEffect } from 'react'
 import { VideoBackgroundMovie } from '../utils/TypeScrptProps';
 import { useDispatch } from 'react-redux';
 import { API_OPTIONS } from '../utils/Constant';
-import {setKeyForVideo} from "../utils/MoviesSlice";
+import {setKeyForVideo} from "../reduxStore/MoviesSlice";
 
 const useNowPlayingVideo= ( movieId:number) => {
   const dispatch = useDispatch();

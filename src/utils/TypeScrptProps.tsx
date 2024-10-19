@@ -16,9 +16,13 @@ interface MoviesState {
 interface GptState {
   isGptEnabled: Boolean;
 }
+interface LanguageSlice {
+  languageSelected:string;
+}
 interface RootState {
   movies: MoviesState;
-  gpt:GptState;
+  gpt: GptState;
+  lang: LanguageSlice;
 }
 interface Videotitle {
   title: string;

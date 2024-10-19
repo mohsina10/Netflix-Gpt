@@ -3,9 +3,11 @@ import { auth } from "../utils/firebase";
 import { onAuthStateChanged, signOut } from "firebase/auth";
 import { useNavigate } from "react-router-dom";
 import { UserContext } from "../utils/UserContext";
-import { LOGO } from "../utils/Constant";
-import {toggleGpt} from "../utils/GptSlice";
-import { useDispatch } from "react-redux";
+import { LOGO, SUPPORTED_LANGUAGES } from "../utils/Constant";
+import {toggleGpt} from "../reduxStore/GptSlice";
+import { useDispatch, useSelector } from "react-redux";
+import { RootState } from "../utils/TypeScrptProps";
+import { setLanguage } from "../reduxStore/LanguageSlice";
 const Header = () => {
   const navigation = useNavigate();
   const context = useContext(UserContext);
@@ -14,7 +16,9 @@ const Header = () => {
     throw new Error("Login must be used within a UserProvider");
   }
   const { user, logoutUser, loginUser } = context;
-
+    const gptToggel = useSelector(
+      (store: RootState) => store?.gpt?.isGptEnabled
+    );
   const handleLogout = () => {
     signOut(auth)
       .then(() => {
@@ -37,19 +41,33 @@ const Header = () => {
     return ()=> unsubscribe();
   }, []);
 const handleClick = useCallback(() => {
-  console.log("Clicked!");
   dispatch(toggleGpt());
 }, []);
+const handleLanguage=(e:any)=>{
+  dispatch(setLanguage(e.target.value));
+}
   return (
     <div className="absolute w-full px-8 py-2 bg-gradient-to-b from-black z-10 flex justify-between">
       <img className="w-20" src={LOGO} alt="logo" />
       {user && (
         <div className="flex p-2">
+          {gptToggel &&
+          <select
+            className="p-2 m-2 bg-gray-900 text-white"
+            onChange={handleLanguage}
+          >
+            {SUPPORTED_LANGUAGES.map((lang) => (
+              <option key={lang.identifier} value={lang.identifier}>
+                {lang.name}
+              </option>
+            ))}
+          </select> 
+         }
           <button
             className="mx-4 my-2 px-4 py-2 bg-purple-800 text-white rounded-lg"
             onClick={handleClick}
           >
-            Gpt Search
+          { gptToggel ? "HomePage":"Gpt Search"}
           </button>
           <img className="w-12 h-12" alt="usericon" src={user?.photoURL} />
           <button onClick={handleLogout} className="font-bold text-white">

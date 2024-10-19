@@ -4,7 +4,7 @@ import './App.css';
 import {Provider} from 'react-redux';
 import Body from './components/Body';
 import { UserProvider } from './utils/UserContext';
-import AppStore from './utils/AppStore';
+import AppStore from './reduxStore/AppStore';
 
 function App() {
   return (
